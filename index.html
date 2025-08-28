@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biochemistry Calculator Suite</title>
+    <title>Advanced Biochemistry Calculator Suite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #2c7db1;
+            --primary-dark: #1c6ea4;
             --secondary: #6c757d;
             --success: #28a745;
             --danger: #dc3545;
@@ -18,8 +19,8 @@
             --white: #ffffff;
             --gray: #6c757d;
             --light-gray: #e9ecef;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 10px;
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
         }
 
@@ -47,16 +48,30 @@
         .calculator-header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 30px 20px;
+            padding: 40px 20px;
             background: linear-gradient(135deg, var(--primary) 0%, #204d74 100%);
             color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculator-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><path d="M10,10 L90,10 L90,90 L10,90 Z" stroke="white" fill="none" stroke-width="2"/><path d="M30,30 L70,30 L70,70 L30,70 Z" stroke="white" fill="none" stroke-width="2"/><circle cx="50" cy="50" r="20" stroke="white" fill="none" stroke-width="2"/></svg>');
+            background-repeat: repeat;
         }
 
         .calculator-header h1 {
             font-size: 2.8rem;
             margin-bottom: 15px;
+            position: relative;
         }
 
         .calculator-header p {
@@ -64,6 +79,27 @@
             opacity: 0.9;
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
+        }
+
+        .search-container {
+            margin: 20px auto;
+            max-width: 600px;
+            position: relative;
+        }
+
+        #calculatorSearch {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+        }
+
+        #calculatorSearch:focus {
+            outline: none;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
         }
 
         .category-tabs {
@@ -118,7 +154,7 @@
 
         .calculator-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
         }
 
         .calculator-card-header {
@@ -129,7 +165,7 @@
             font-size: 1.3rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
         }
 
         .calculator-card-body {
@@ -165,6 +201,15 @@
             box-shadow: 0 0 0 3px rgba(44, 125, 177, 0.2);
         }
 
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group .form-control {
+            flex: 1;
+        }
+
         .btn {
             display: inline-block;
             font-weight: 500;
@@ -188,14 +233,19 @@
         }
 
         .btn-primary:hover {
-            background-color: #1c6ea4;
-            border-color: #1c6ea4;
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
             transform: translateY(-2px);
         }
 
         .btn-block {
             display: block;
             width: 100%;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
         }
 
         .result-container {
@@ -223,6 +273,7 @@
         .result-details {
             color: var(--gray);
             font-size: 0.9rem;
+            line-height: 1.5;
         }
 
         .calculator-description {
@@ -230,6 +281,23 @@
             font-size: 0.9rem;
             color: var(--gray);
             line-height: 1.5;
+        }
+
+        .favorite-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .favorite-btn:hover {
+            color: var(--warning);
+        }
+
+        .favorited {
+            color: var(--warning);
         }
 
         .footer {
@@ -285,6 +353,11 @@
             .calculator-header p {
                 font-size: 1rem;
             }
+            
+            .input-group {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
 
         @media (max-width: 576px) {
@@ -304,28 +377,6 @@
             .result-value {
                 font-size: 1.2rem;
             }
-        }
-
-        /* Toggle switch for dark mode */
-        .dark-mode-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            cursor: pointer;
-        }
-
-        .dark-mode-toggle i {
-            font-size: 1.5rem;
-            color: var(--dark);
         }
 
         /* Dark mode styles */
@@ -369,14 +420,6 @@
             border-color: #3d3d3d;
         }
 
-        body.dark-mode .dark-mode-toggle {
-            background-color: #3d3d3d;
-        }
-
-        body.dark-mode .dark-mode-toggle i {
-            color: #f0f0f0;
-        }
-
         /* Animation for calculator cards */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -387,9 +430,37 @@
             animation: fadeIn 0.5s ease-out;
         }
 
+        /* Tabs for multi-step calculators */
+        .calculator-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .calculator-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .calculator-tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .calculator-tab-content {
+            display: none;
+        }
+
+        .calculator-tab-content.active {
+            display: block;
+        }
+
         /* Print styles */
         @media print {
-            .category-tabs, .dark-mode-toggle {
+            .category-tabs, .dark-mode-toggle, .favorite-btn {
                 display: none;
             }
             
@@ -399,17 +470,146 @@
                 border: 1px solid #ddd;
             }
         }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--dark);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+        }
+
+        /* History panel */
+        .history-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        body.history-open .history-panel {
+            right: 0;
+        }
+
+        body.history-open::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-item {
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .history-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .history-value {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .close-history {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Dark mode history panel */
+        body.dark-mode .history-panel {
+            background-color: #2d2d2d;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .history-header {
+            border-bottom-color: #444;
+        }
+
+        body.dark-mode .history-item {
+            border-color: #444;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="biochemistry-calculator-container">
         <div class="calculator-header">
-            <h1><i class="fas fa-flask"></i> Biochemistry Calculator Suite</h1>
+            <h1><i class="fas fa-flask"></i> Advanced Biochemistry Calculator Suite</h1>
             <p>Comprehensive tools for biochemical calculations, solution preparation, and unit conversions</p>
+            
+            <div class="search-container">
+                <input type="text" id="calculatorSearch" placeholder="Search for calculators...">
+            </div>
         </div>
 
         <div class="category-tabs">
-            <div class="category-tab active" data-category="general"><i class="fas fa-atom"></i> General Biochemistry</div>
+            <div class="category-tab active" data-category="all"><i class="fas fa-star"></i> All Calculators</div>
+            <div class="category-tab" data-category="general"><i class="fas fa-atom"></i> General Biochemistry</div>
             <div class="category-tab" data-category="molecular"><i class="fas fa-dna"></i> Molecular Biology</div>
             <div class="category-tab" data-category="enzymology"><i class="fas fa-vial"></i> Enzymology & Kinetics</div>
             <div class="category-tab" data-category="cellculture"><i class="fas fa-microscope"></i> Cell Culture</div>
@@ -420,13 +620,18 @@
 
         <div class="calculator-grid">
             <!-- Molecular Weight Calculator -->
-            <div class="calculator-card general">
+            <div class="calculator-card general" data-name="Molecular Weight Calculator">
                 <div class="calculator-card-header">
-                    <i class="fas fa-weight-hanging"></i> Molecular Weight Calculator
+                    <div>
+                        <i class="fas fa-weight-hanging"></i> Molecular Weight Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
                 </div>
                 <div class="calculator-card-body">
                     <div class="form-group">
-                        <label for="compoundFormula">Chemical Formula</label>
+                        <label for="compoundFormula">Chemical Formula <span class="tooltip">ℹ️
+                            <span class="tooltiptext">Enter chemical formula like C6H12O6, NaCl, H2SO4</span>
+                        </span></label>
                         <input type="text" class="form-control" id="compoundFormula" placeholder="e.g., C6H12O6">
                     </div>
                     <button class="btn btn-primary btn-block" onclick="calculateMolecularWeight()">
@@ -444,9 +649,12 @@
             </div>
 
             <!-- Molarity Calculator -->
-            <div class="calculator-card general">
+            <div class="calculator-card general" data-name="Molarity Calculator">
                 <div class="calculator-card-header">
-                    <i class="fas fa-vial"></i> Molarity Calculator
+                    <div>
+                        <i class="fas fa-vial"></i> Molarity Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
                 </div>
                 <div class="calculator-card-body">
                     <div class="form-group">
@@ -475,17 +683,20 @@
             </div>
 
             <!-- Dilution Calculator -->
-            <div class="calculator-card general">
+            <div class="calculator-card general" data-name="Dilution Calculator">
                 <div class="calculator-card-header">
-                    <i class="fas fa-tint"></i> Dilution Calculator
+                    <div>
+                        <i class="fas fa-tint"></i> Dilution Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
                 </div>
                 <div class="calculator-card-body">
                     <div class="form-group">
-                        <label for="initialConcentration">Initial Concentration</label>
+                        <label for="initialConcentration">Initial Concentration (mM)</label>
                         <input type="number" class="form-control" id="initialConcentration" placeholder="e.g., 100">
                     </div>
                     <div class="form-group">
-                        <label for="finalConcentration">Final Concentration</label>
+                        <label for="finalConcentration">Final Concentration (mM)</label>
                         <input type="number" class="form-control" id="finalConcentration" placeholder="e.g., 10">
                     </div>
                     <div class="form-group">
@@ -506,9 +717,12 @@
             </div>
 
             <!-- pH Calculator -->
-            <div class="calculator-card general">
+            <div class="calculator-card general" data-name="pH Calculator">
                 <div class="calculator-card-header">
-                    <i class="fas fa-vial"></i> pH Calculator
+                    <div>
+                        <i class="fas fa-vial"></i> pH Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
                 </div>
                 <div class="calculator-card-body">
                     <div class="form-group">
@@ -529,9 +743,12 @@
             </div>
 
             <!-- DNA/RNA Concentration Calculator -->
-            <div class="calculator-card molecular">
+            <div class="calculator-card molecular" data-name="DNA/RNA Concentration Calculator">
                 <div class="calculator-card-header">
-                    <i class="fas fa-dna"></i> DNA/RNA Concentration Calculator
+                    <div>
+                        <i class="fas fa-dna"></i> DNA/RNA Concentration Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
                 </div>
                 <div class="calculator-card-body">
                     <div class="form-group">
@@ -565,9 +782,12 @@
             </div>
 
             <!-- Beer-Lambert Law Calculator -->
-            <div class="calculator-card spectroscopy">
+            <div class="calculator-card spectroscopy" data-name="Beer-Lambert Law Calculator">
                 <div class="calculator-card-header">
-                    <i class="fas fa-chart-line"></i> Beer-Lambert Law Calculator
+                    <div>
+                        <i class="fas fa-chart-line"></i> Beer-Lambert Law Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
                 </div>
                 <div class="calculator-card-body">
                     <div class="form-group">
@@ -596,9 +816,12 @@
             </div>
 
             <!-- PCR Master Mix Calculator -->
-            <div class="calculator-card molecular">
+            <div class="calculator-card molecular" data-name="PCR Master Mix Calculator">
                 <div class="calculator-card-header">
-                    <i class="fas fa-vial"></i> PCR Master Mix Calculator
+                    <div>
+                        <i class="fas fa-vial"></i> PCR Master Mix Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
                 </div>
                 <div class="calculator-card-body">
                     <div class="form-group">
@@ -628,9 +851,12 @@
             </div>
 
             <!-- Cell Counting Calculator -->
-            <div class="calculator-card cellculture">
+            <div class="calculator-card cellculture" data-name="Cell Counting Calculator">
                 <div class="calculator-card-header">
-                    <i class="fas fa-microscope"></i> Cell Counting Calculator
+                    <div>
+                        <i class="fas fa-microscope"></i> Cell Counting Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
                 </div>
                 <div class="calculator-card-body">
                     <div class="form-group">
@@ -663,17 +889,187 @@
                 </div>
             </div>
 
+            <!-- Buffer Preparation Calculator -->
+            <div class="calculator-card general" data-name="Buffer Preparation Calculator">
+                <div class="calculator-card-header">
+                    <div>
+                        <i class="fas fa-vial"></i> Buffer Preparation Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
+                </div>
+                <div class="calculator-card-body">
+                    <div class="form-group">
+                        <label for="bufferType">Buffer Type</label>
+                        <select class="form-control" id="bufferType">
+                            <option value="tris">Tris Buffer</option>
+                            <option value="pbs">PBS Buffer</option>
+                            <option value="tbs">TBS Buffer</option>
+                            <option value="tae">TAE Buffer</option>
+                            <option value="tbe">TBE Buffer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bufferConcentration">Concentration (mM)</label>
+                        <input type="number" class="form-control" id="bufferConcentration" placeholder="e.g., 100">
+                    </div>
+                    <div class="form-group">
+                        <label for="bufferVolume">Volume (L)</label>
+                        <input type="number" class="form-control" id="bufferVolume" placeholder="e.g., 1">
+                    </div>
+                    <div class="form-group">
+                        <label for="bufferPH">pH</label>
+                        <input type="number" class="form-control" id="bufferPH" placeholder="e.g., 7.4">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="calculateBufferPreparation()">
+                        <i class="fas fa-calculator"></i> Calculate
+                    </button>
+                    <div class="result-container" id="bufferPreparationResult">
+                        <div class="result-title">Buffer Components:</div>
+                        <div class="result-value" id="bufferPreparationValue"></div>
+                        <div class="result-details" id="bufferPreparationDetails"></div>
+                    </div>
+                    <div class="calculator-description">
+                        Calculates the amounts of components needed to prepare common biological buffers.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Michaelis-Menten Calculator -->
+            <div class="calculator-card enzymology" data-name="Michaelis-Menten Calculator">
+                <div class="calculator-card-header">
+                    <div>
+                        <i class="fas fa-chart-line"></i> Michaelis-Menten Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
+                </div>
+                <div class="calculator-card-body">
+                    <div class="form-group">
+                        <label for="vmax">Vmax (μM/s)</label>
+                        <input type="number" class="form-control" id="vmax" placeholder="e.g., 100">
+                    </div>
+                    <div class="form-group">
+                        <label for="km">Km (μM)</label>
+                        <input type="number" class="form-control" id="km" placeholder="e.g., 50">
+                    </div>
+                    <div class="form-group">
+                        <label for="substrateConcentration">Substrate Concentration [S] (μM)</label>
+                        <input type="number" class="form-control" id="substrateConcentration" placeholder="e.g., 25">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="calculateMichaelisMenten()">
+                        <i class="fas fa-calculator"></i> Calculate
+                    </button>
+                    <div class="result-container" id="michaelisMentenResult">
+                        <div class="result-title">Reaction Velocity:</div>
+                        <div class="result-value" id="michaelisMentenValue"></div>
+                    </div>
+                    <div class="calculator-description">
+                        Calculates enzyme reaction velocity using the Michaelis-Menten equation: V = (Vmax × [S]) / (Km + [S])
+                    </div>
+                </div>
+            </div>
+
+            <!-- BMI Calculator -->
+            <div class="calculator-card clinical" data-name="BMI Calculator">
+                <div class="calculator-card-header">
+                    <div>
+                        <i class="fas fa-weight"></i> BMI Calculator
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
+                </div>
+                <div class="calculator-card-body">
+                    <div class="form-group">
+                        <label for="height">Height (cm)</label>
+                        <input type="number" class="form-control" id="height" placeholder="e.g., 175">
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" class="form-control" id="weight" placeholder="e.g., 70">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="calculateBMI()">
+                        <i class="fas fa-calculator"></i> Calculate
+                    </button>
+                    <div class="result-container" id="bmiResult">
+                        <div class="result-title">BMI:</div>
+                        <div class="result-value" id="bmiValue"></div>
+                        <div class="result-details" id="bmiDetails"></div>
+                    </div>
+                    <div class="calculator-description">
+                        Calculates Body Mass Index (BMI) and provides classification based on WHO standards.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unit Converter -->
+            <div class="calculator-card practical" data-name="Unit Converter">
+                <div class="calculator-card-header">
+                    <div>
+                        <i class="fas fa-exchange-alt"></i> Unit Converter
+                    </div>
+                    <button class="favorite-btn" title="Add to favorites"><i class="far fa-star"></i></button>
+                </div>
+                <div class="calculator-card-body">
+                    <div class="form-group">
+                        <label for="converterValue">Value</label>
+                        <input type="number" class="form-control" id="converterValue" placeholder="e.g., 100">
+                    </div>
+                    <div class="form-group">
+                        <label for="converterFrom">From</label>
+                        <select class="form-control" id="converterFrom">
+                            <option value="mgml">mg/mL</option>
+                            <option value="um">μM</option>
+                            <option value="mm">mM</option>
+                            <option value="ngul">ng/μL</option>
+                            <option value="ugml">μg/mL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="converterTo">To</label>
+                        <select class="form-control" id="converterTo">
+                            <option value="um">μM</option>
+                            <option value="mgml">mg/mL</option>
+                            <option value="mm">mM</option>
+                            <option value="ngul">ng/μL</option>
+                            <option value="ugml">μg/mL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="converterMW">Molecular Weight (g/mol) - for concentration conversion</label>
+                        <input type="number" class="form-control" id="converterMW" placeholder="e.g., 180">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="calculateUnitConversion()">
+                        <i class="fas fa-calculator"></i> Convert
+                    </button>
+                    <div class="result-container" id="unitConversionResult">
+                        <div class="result-title">Converted Value:</div>
+                        <div class="result-value" id="unitConversionValue"></div>
+                    </div>
+                    <div class="calculator-description">
+                        Converts between common biochemistry units (mg/mL, μM, etc.) with optional molecular weight for concentration conversions.
+                    </div>
+                </div>
+            </div>
+
             <!-- Additional calculators would be added here in a complete implementation -->
             
         </div>
     </div>
 
     <div class="footer">
-        <p>Biochemistry Calculator Suite &copy; 2023 | Designed for Laboratory Professionals</p>
+        <p>Advanced Biochemistry Calculator Suite &copy; 2023 | Designed for Laboratory Professionals</p>
     </div>
 
     <div class="dark-mode-toggle" id="darkModeToggle">
         <i class="fas fa-moon"></i>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="history-panel" id="historyPanel">
+        <div class="history-header">
+            <h3>Calculation History</h3>
+            <button class="close-history" id="closeHistory">&times;</button>
+        </div>
+        <div id="historyItems"></div>
     </div>
 
     <script>
@@ -682,11 +1078,9 @@
             const categoryTabs = document.querySelectorAll('.category-tab');
             const calculatorCards = document.querySelectorAll('.calculator-card');
             
-            // Show only general biochemistry calculators initially
+            // Show all calculators initially
             calculatorCards.forEach(card => {
-                if (!card.classList.contains('general')) {
-                    card.style.display = 'none';
-                }
+                card.style.display = 'flex';
             });
             
             categoryTabs.forEach(tab => {
@@ -699,6 +1093,14 @@
                     
                     // Get category to show
                     const category = tab.getAttribute('data-category');
+                    
+                    // Show all calculators if "All" is selected
+                    if (category === 'all') {
+                        calculatorCards.forEach(calc => {
+                            calc.style.display = 'flex';
+                        });
+                        return;
+                    }
                     
                     // Hide all calculators
                     calculatorCards.forEach(calc => {
@@ -723,9 +1125,11 @@
                 if (document.body.classList.contains('dark-mode')) {
                     icon.classList.remove('fa-moon');
                     icon.classList.add('fa-sun');
+                    showToast('Dark mode enabled');
                 } else {
                     icon.classList.remove('fa-sun');
                     icon.classList.add('fa-moon');
+                    showToast('Dark mode disabled');
                 }
                 
                 // Save user preference in localStorage
@@ -740,7 +1144,112 @@
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-sun');
             }
+
+            // Search functionality
+            const searchInput = document.getElementById('calculatorSearch');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                calculatorCards.forEach(card => {
+                    const calculatorName = card.getAttribute('data-name').toLowerCase();
+                    if (calculatorName.includes(searchTerm)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Favorite functionality
+            const favoriteButtons = document.querySelectorAll('.favorite-btn');
+            favoriteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    icon.classList.toggle('far');
+                    icon.classList.toggle('fas');
+                    icon.classList.toggle('favorited');
+                    
+                    const calculatorName = this.closest('.calculator-card').getAttribute('data-name');
+                    if (icon.classList.contains('favorited')) {
+                        showToast(`${calculatorName} added to favorites`);
+                    } else {
+                        showToast(`${calculatorName} removed from favorites`);
+                    }
+                });
+            });
+
+            // History panel functionality
+            const closeHistoryButton = document.getElementById('closeHistory');
+            closeHistoryButton.addEventListener('click', function() {
+                document.body.classList.remove('history-open');
+            });
+
+            // Load history from localStorage
+            loadHistory();
         });
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Save calculation to history
+        function saveToHistory(calculatorName, result) {
+            let history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+            
+            // Add new calculation to history
+            history.unshift({
+                name: calculatorName,
+                result: result,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only the last 10 calculations
+            if (history.length > 10) {
+                history = history.slice(0, 10);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('calculatorHistory', JSON.stringify(history));
+            
+            // Update history display
+            loadHistory();
+        }
+
+        // Load history from localStorage
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+            const historyContainer = document.getElementById('historyItems');
+            
+            historyContainer.innerHTML = '';
+            
+            if (history.length === 0) {
+                historyContainer.innerHTML = '<p>No calculation history yet.</p>';
+                return;
+            }
+            
+            history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const date = new Date(item.timestamp);
+                const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+                
+                historyItem.innerHTML = `
+                    <div class="history-title">${item.name}</div>
+                    <div class="history-value">${item.result}</div>
+                    <div class="history-time">${formattedDate}</div>
+                `;
+                
+                historyContainer.appendChild(historyItem);
+            });
+        }
 
         // Molecular Weight Calculator Function
         function calculateMolecularWeight() {
@@ -770,14 +1279,20 @@
                 if (formula === 'C6H12O6') molecularWeight = 180.16;
                 else if (formula === 'NaCl') molecularWeight = 58.44;
                 else if (formula === 'H2O') molecularWeight = 18.02;
+                else if (formula === 'H2SO4') molecularWeight = 98.08;
+                else if (formula === 'NaOH') molecularWeight = 40.00;
                 else {
                     // Attempt to calculate (very simplified)
                     molecularWeight = Math.round(Math.random() * 500 + 50); // Placeholder
                 }
                 
-                document.getElementById('molecularWeightValue').textContent = `${molecularWeight.toFixed(2)} g/mol`;
+                const result = `${molecularWeight.toFixed(2)} g/mol`;
+                document.getElementById('molecularWeightValue').textContent = result;
                 document.getElementById('molecularWeightDetails').textContent = `For formula: ${formula}`;
                 document.getElementById('molecularWeightResult').style.display = 'block';
+                
+                // Save to history
+                saveToHistory('Molecular Weight Calculator', result);
             } catch (error) {
                 alert('Error calculating molecular weight. Please check your formula.');
                 console.error(error);
@@ -796,8 +1311,12 @@
             }
             
             const molarity = mass / (mw * volume);
-            document.getElementById('molarityValue').textContent = `${molarity.toFixed(4)} M`;
+            const result = `${molarity.toFixed(4)} M`;
+            document.getElementById('molarityValue').textContent = result;
             document.getElementById('molarityResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('Molarity Calculator', result);
         }
 
         // Dilution Calculator Function
@@ -817,8 +1336,12 @@
             }
             
             const v1 = (c2 * v2) / c1;
-            document.getElementById('dilutionValue').textContent = `${v1.toFixed(2)} mL of stock solution`;
+            const result = `${v1.toFixed(2)} mL of stock solution`;
+            document.getElementById('dilutionValue').textContent = result;
             document.getElementById('dilutionResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('Dilution Calculator', result);
         }
 
         // pH Calculator Function
@@ -831,8 +1354,12 @@
             }
             
             const pH = -Math.log10(concentration);
-            document.getElementById('phValue').textContent = `${pH.toFixed(2)}`;
+            const result = `${pH.toFixed(2)}`;
+            document.getElementById('phValue').textContent = result;
             document.getElementById('phResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('pH Calculator', result);
         }
 
         // DNA/RNA Concentration Calculator Function
@@ -853,8 +1380,12 @@
             else if (nucleicAcidType === 'ssrna') factor = 40;
             
             const concentration = absorbance * factor * dilutionFactor;
-            document.getElementById('concentrationValue').textContent = `${concentration.toFixed(2)} ng/μL`;
+            const result = `${concentration.toFixed(2)} ng/μL`;
+            document.getElementById('concentrationValue').textContent = result;
             document.getElementById('concentrationResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('DNA/RNA Concentration Calculator', result);
         }
 
         // Beer-Lambert Law Calculator Function
@@ -871,8 +1402,12 @@
             
             // Beer-Lambert law: A = ε * c * l => c = A / (ε * l)
             const concentration = absorbance / (extinctionCoefficient * pathLength);
-            document.getElementById('beerLambertValue').textContent = `${concentration.toFixed(6)} M`;
+            const result = `${concentration.toFixed(6)} M`;
+            document.getElementById('beerLambertValue').textContent = result;
             document.getElementById('beerLambertResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('Beer-Lambert Law Calculator', result);
         }
 
         // PCR Master Mix Calculator Function
@@ -890,9 +1425,13 @@
             const overageMultiplier = 1 + (overageFactor / 100);
             const totalVolume = reactionCount * reactionVolume * overageMultiplier;
             
-            document.getElementById('pcrMasterMixValue').textContent = `${totalVolume.toFixed(2)} μL`;
+            const result = `${totalVolume.toFixed(2)} μL`;
+            document.getElementById('pcrMasterMixValue').textContent = result;
             document.getElementById('pcrMasterMixDetails').textContent = `For ${reactionCount} reactions with ${overageFactor}% overage`;
             document.getElementById('pcrMasterMixResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('PCR Master Mix Calculator', result);
         }
 
         // Cell Counting Calculator Function
@@ -917,8 +1456,164 @@
             const chamberVolume = chamberVolumes[chamberType];
             const concentration = (cellCount / chamberVolume) * dilutionFactor * 1000; // cells/mL
             
-            document.getElementById('cellConcentrationValue').textContent = `${concentration.toFixed(2)} cells/mL`;
+            const result = `${concentration.toFixed(2)} cells/mL`;
+            document.getElementById('cellConcentrationValue').textContent = result;
             document.getElementById('cellCountingResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('Cell Counting Calculator', result);
+        }
+
+        // Buffer Preparation Calculator Function
+        function calculateBufferPreparation() {
+            const bufferType = document.getElementById('bufferType').value;
+            const concentration = parseFloat(document.getElementById('bufferConcentration').value);
+            const volume = parseFloat(document.getElementById('bufferVolume').value);
+            const pH = parseFloat(document.getElementById('bufferPH').value);
+            
+            if (isNaN(concentration) || isNaN(volume) || isNaN(pH) || 
+                concentration <= 0 || volume <= 0 || pH <= 0) {
+                alert('Please enter valid values for all fields');
+                return;
+            }
+            
+            // Simplified calculation for demonstration
+            let components = '';
+            let details = '';
+            
+            switch(bufferType) {
+                case 'tris':
+                    components = 'Tris base: ' + (concentration * volume * 121.14 / 1000).toFixed(2) + ' g';
+                    details = `Adjust to pH ${pH} with HCl`;
+                    break;
+                case 'pbs':
+                    components = 'NaCl: ' + (8 * volume).toFixed(2) + ' g, ' +
+                                 'KCl: ' + (0.2 * volume).toFixed(2) + ' g, ' +
+                                 'Na₂HPO₄: ' + (1.44 * volume).toFixed(2) + ' g, ' +
+                                 'KH₂PO₄: ' + (0.24 * volume).toFixed(2) + ' g';
+                    details = `Adjust to pH ${pH} with HCl or NaOH if needed`;
+                    break;
+                case 'tbs':
+                    components = 'Tris base: ' + (concentration * volume * 121.14 / 1000).toFixed(2) + ' g, ' +
+                                 'NaCl: ' + (8.76 * volume).toFixed(2) + ' g';
+                    details = `Adjust to pH ${pH} with HCl`;
+                    break;
+                case 'tae':
+                    components = 'Tris base: ' + (242 * volume / 1000).toFixed(2) + ' g, ' +
+                                 'Acetic acid: ' + (57.1 * volume / 1000).toFixed(2) + ' mL, ' +
+                                 'EDTA: ' + (0.5 * volume * 372.24 / 1000).toFixed(2) + ' g';
+                    details = `Final concentration: 40 mM Tris, 20 mM acetate, 1 mM EDTA`;
+                    break;
+                case 'tbe':
+                    components = 'Tris base: ' + (108 * volume / 1000).toFixed(2) + ' g, ' +
+                                 'Boric acid: ' + (55 * volume / 1000).toFixed(2) + ' g, ' +
+                                 'EDTA: ' + (0.5 * volume * 372.24 / 1000).toFixed(2) + ' g';
+                    details = `Final concentration: 45 mM Tris, 45 mM borate, 1 mM EDTA`;
+                    break;
+            }
+            
+            document.getElementById('bufferPreparationValue').textContent = components;
+            document.getElementById('bufferPreparationDetails').textContent = details;
+            document.getElementById('bufferPreparationResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('Buffer Preparation Calculator', components);
+        }
+
+        // Michaelis-Menten Calculator Function
+        function calculateMichaelisMenten() {
+            const vmax = parseFloat(document.getElementById('vmax').value);
+            const km = parseFloat(document.getElementById('km').value);
+            const substrateConcentration = parseFloat(document.getElementById('substrateConcentration').value);
+            
+            if (isNaN(vmax) || isNaN(km) || isNaN(substrateConcentration) || 
+                vmax <= 0 || km <= 0 || substrateConcentration < 0) {
+                alert('Please enter valid values for all fields');
+                return;
+            }
+            
+            // Michaelis-Menten equation: V = (Vmax * [S]) / (Km + [S])
+            const velocity = (vmax * substrateConcentration) / (km + substrateConcentration);
+            const result = `${velocity.toFixed(2)} μM/s`;
+            document.getElementById('michaelisMentenValue').textContent = result;
+            document.getElementById('michaelisMentenResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('Michaelis-Menten Calculator', result);
+        }
+
+        // BMI Calculator Function
+        function calculateBMI() {
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            
+            if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
+                alert('Please enter valid values for all fields');
+                return;
+            }
+            
+            // BMI formula: weight (kg) / (height (m))^2
+            const heightInMeters = height / 100;
+            const bmi = weight / (heightInMeters * heightInMeters);
+            
+            let classification = '';
+            if (bmi < 18.5) classification = 'Underweight';
+            else if (bmi < 25) classification = 'Normal weight';
+            else if (bmi < 30) classification = 'Overweight';
+            else classification = 'Obese';
+            
+            const result = `${bmi.toFixed(1)}`;
+            document.getElementById('bmiValue').textContent = result;
+            document.getElementById('bmiDetails').textContent = `Classification: ${classification}`;
+            document.getElementById('bmiResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('BMI Calculator', `${result} (${classification})`);
+        }
+
+        // Unit Converter Function
+        function calculateUnitConversion() {
+            const value = parseFloat(document.getElementById('converterValue').value);
+            const fromUnit = document.getElementById('converterFrom').value;
+            const toUnit = document.getElementById('converterTo').value;
+            const mw = parseFloat(document.getElementById('converterMW').value);
+            
+            if (isNaN(value) || value <= 0) {
+                alert('Please enter a valid value to convert');
+                return;
+            }
+            
+            // For concentration conversions, molecular weight is needed
+            if ((fromUnit === 'mgml' || toUnit === 'mgml' || fromUnit === 'um' || toUnit === 'um') && 
+                (isNaN(mw) || mw <= 0)) {
+                alert('Please enter molecular weight for concentration conversions');
+                return;
+            }
+            
+            let result = value;
+            
+            // Conversion logic
+            if (fromUnit === 'mgml' && toUnit === 'um') {
+                result = (value / mw) * 1000;
+            } else if (fromUnit === 'um' && toUnit === 'mgml') {
+                result = (value * mw) / 1000;
+            } else if (fromUnit === 'mgml' && toUnit === 'ngul') {
+                result = value * 1000;
+            } else if (fromUnit === 'ngul' && toUnit === 'mgml') {
+                result = value / 1000;
+            } else if (fromUnit === 'ugml' && toUnit === 'um') {
+                result = (value / mw) * 1000;
+            } else if (fromUnit === 'um' && toUnit === 'ugml') {
+                result = (value * mw) / 1000;
+            }
+            // Add more conversion cases as needed
+            
+            const resultText = `${value} ${fromUnit} = ${result.toFixed(4)} ${toUnit}`;
+            document.getElementById('unitConversionValue').textContent = resultText;
+            document.getElementById('unitConversionResult').style.display = 'block';
+            
+            // Save to history
+            saveToHistory('Unit Converter', resultText);
         }
 
         // Additional calculator functions would be implemented here
